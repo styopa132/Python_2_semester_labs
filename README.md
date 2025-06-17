@@ -12,6 +12,124 @@ F(n) = F(n – 2) * (n – 1),  при n >2
 –	подсчитывает общее количество всех чисел, вычисляет общую сумму всех чисел и среднее арифметическое всех чисел, округляя его до 3-го знака.
 Результаты вычислений отображаются на экране сразу после завершения ввода последовательности. После завершения последовательности программа должна выводить результаты расчётов, после чего предлагать начать новую последователь¬ность или завершить программу. Перед началом вычислений программа должна предлагать распечатать ряд до заданного значения.
 
+**Листинг Numerics:**
+```python
+# Функция проверки принадлежности числа ряду
+def IsNumber(n):
+    s = 0
+    # Ноль всегда обладает свойством
+    if n == 0 or n == 1 or n == 2: return 1
+    # Взять по модулю
+    if n < 0: n = -n
+    # Проверить на принадлежность
+    i = 1
+    if n % 2 == 0:
+        m = 3
+    else:
+        m = 2
+    while m <= n - 1:
+        s = i * m
+        i = s
+        m += 2
+    return s
+def IsNumber1(n):
+    if n < 0 : n = -n
+    i = 1
+    while i <= n+1:
+        if n == IsNumber(i):
+            return True
+        i+=1
+    return False
+# Функция обработки последовательности чисел
+def Sequence():
+    # Инициализация счетчиков и сумматоров
+    numAll = numYes = numNot = 0
+    sumAll = sumYes = sumNot = 0
+    # Инициализация минимума и максимума
+    Min = +2147483647
+    Max = -2147483648
+
+    # Цикл ввода чисел пока не ноль
+    while True:
+        # Ввод числа
+        num = int(input('Введите число:>'))
+        # Завершение, если ноль
+        if num == 0:  break
+
+        # Проверка на допустимый диапазон
+        if num < -65535 or num > +65535:
+            print('- значение выходит за допустимый диапазон')
+            continue
+
+        # Вызов функции проверки свойства числа
+        check = IsNumber1(num)
+
+        # Отображение результата проверки
+        # Подсчет количества и суммы для свойства
+        if check == True:
+            numYes += 1
+            sumYes += num
+            print('(', num, ') число ряда [ДА]')
+        else:
+            numNot += 1
+            sumNot += num
+            print('(', num, ') прочее число [НЕТ]')
+
+        # Подсчет общего количества и общей суммы
+        numAll += 1
+        sumAll += num
+        # Определение минимального и максимального из чисел
+        if num < Min: Min = num
+        if num > Max: Max = num
+
+    # Отображение итогов
+    print('Всего: всех = ', numAll, ', чисел ряда = ', numYes, ', прочих чисел = ', numNot)
+    print('Суммы: всех = ', sumAll, ', чисел ряда = ', sumYes, ', прочих чисел = ', sumNot)
+
+    # Вычисление среднего арифметического чисел
+    if numAll > 0:
+        Avg = round(float(sumAll) / float(numAll), 3)
+        print('Итого: минимум = ', Min, ', максимум = ', Max, ', среднее = ', Avg)
+
+
+# Главная функция
+def main():
+    # Ввод предельного значения для печати ряда
+    limit = input("Введите значение, до которого нужно печатать ряд [Пусто-Отмена]:>").strip()
+    # Если введена пустая строка, то переход к вводу последовательностей
+    if limit != "":
+        # Иначе, инициализация переменных (с преобразованием в число)
+        limit = int(limit)
+        i = 1
+        while IsNumber(i)<=limit:
+            print((IsNumber(i)), end=', ')
+            i+=1
+        print()
+    # Инициализация переменных
+    Seq = 0
+    Yes = 'да'
+    # Цикл ввода последовательностей
+    while Yes == 'да' or Yes == 'yes':
+        # Подсчет количества последовательностей
+        Seq = Seq + 1
+        print('Последовательность - ', Seq)
+        # Вызов функции ввода и обработки последовательности
+        Sequence()
+        print()
+        # Подтверждение новой последовательности
+        Yes = input('Начать новую последовательность [да|yes]:>')
+        Yes = Yes.lower()
+        print()
+    # Вывод итога
+    print('Обработано:', Seq, 'посл.')
+    input()
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
+
 # Задание лабы 3:
 
 Дана формула:
@@ -24,6 +142,90 @@ F(n) = F(n – 2) * (n – 1),  при n >2
 
 Вводится целое неотрицательное число m в диапазоне от 1 до 12. Необходимо разработать программу, которая вычисляет формулу и выводит результат на экран. Значения m вводятся до тех пор, пока пользователь подтверждает ввод.
 
+**Листинг Calculate:**
+```python
+# Функция вычисления факториала N!
+def Factorial(n):
+    # Результат вычислений (значение факториала)
+    result = 1.0
+    # Факториал 0!=1, 1!=1, поэтому начинать от 2!
+    if n > 1:
+        # Умножать (n-1)-раз на счётчик
+        k = 2
+        while k <= n:
+            result = result * k
+            k = k + 1
+    # Вернуть результат
+    return result
+# Функция вычисления целой степени X^N
+def Power(x, n):
+    # Признак знака степени
+    divide = False
+    # Результат вычислений
+    result = 1.0
+    # Если степень отрицательна
+    if n < 0:
+        # Запомнить знак и взять модуль
+        divide = True
+        n = -n
+    # Умножать n-раз на аргумент
+    k = 1
+    while k <= n:
+        result = result * x
+        k = k + 1
+    # Вернуть результат, если степень положительна, или вернуть
+    # единицу делить на результат, если степень отрицательна
+    if divide == True: result = (1 / result)
+    return result
+
+
+# Функция вычисления формулы
+def Calculate(m):
+    # Счётчик итераций (номер элемента ряда)
+    i = 1
+    # Знак элемента ряда
+    # Значение суммы элементов ряда (результат)
+    result = 0.0
+    # Вычислять сумму элементов, пока счётчик не дошёл до последнего
+    if m %2 ==0: z = 1
+    else: z = -1
+    while i <= m:
+        # Вычислить следующий элемент ряда и прибавить его к сумме
+        result = result + ((Power(m - i, 2) - Power(i-1,3)) / Factorial(m-i+2)) * z
+        # Изменить знак элемента на противоположный
+        # Увеличить счётчик итераций
+        i = i + 1
+        z = -z
+    # Вернуть результат
+    return result
+
+
+# Главная функция реализует интерфейс с пользователем
+def main():
+    # Инициализация переменных
+    Yes = 'да'
+    # Цикл ввода значений
+    while Yes == 'да' or Yes == 'yes':
+        # Ввод числа
+        value = int(input('Введите число [1..12]:>'))
+        if value < 1 or value > 12:
+            print(' - некорректное значение')
+        else:
+            # Вычислить и вывести результат
+            result = Calculate(value)
+            print('Результат (', value, ') = ', result)
+        print()
+        # Подтверждение ввода нового значения
+        Yes = input('Повторить ввод [да|yes]:>')
+        Yes = Yes.lower()
+        print()
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
+
 # Задание лабы 4:
 
 С консоли вводится имя исходного файла. Файл имеет текстовый формат и содержит небольшой фрагмент литературного произведения. Необходимо разработать программу, которая:  
@@ -33,6 +235,232 @@ F(n) = F(n – 2) * (n – 1),  при n >2
 
 Всего символов в тексте...................50##############  
 Всего слов в тексте.......................10###############  
+
+**Листинг Text:**
+```python
+# Подключение модуля работы со временем и модуля работы с файлами
+import time
+import os.path
+
+
+# Функция определяет режимы доступа к файлу или папке
+# (R - на чтение, W - на запись, X - на исполнение)
+def checkAccess(filename):
+    filemode = ''
+    if os.access(filename, os.R_OK):  filemode += 'R'
+    if os.access(filename, os.W_OK):  filemode += 'W'
+    if os.access(filename, os.X_OK):  filemode += 'X'
+    return filemode
+
+
+# Функция получает и печатает содержание директории
+def Directories():
+    # Получение пути к текущей директории
+    path = os.getcwd()
+    # Полагаем, что результат корректен
+    ok = True
+    # Цикл печати содержания директории
+    while ok:
+        print('Директория: ', path, ('[монтированная]' if os.path.ismount(path) else ''))
+
+        # Получение содержания текущей директории
+        names = os.listdir(path)
+        names.sort()
+
+        # Печать списка папок в текущей директории
+        for name in names:
+            # Формирование полного имени с путем
+            item = path + '\\' + name
+            # Проверка, что полное имя является папкой
+            if os.path.isdir(item):
+                # Получение даты и времени создания папки
+                when = time.ctime(os.path.getctime(item))
+                # Перевод имени папки в верхний регистр
+                name = name.upper()
+                # Печать информации о папке
+                print(name.ljust(40), (chr(32) * 7), when)
+
+        # Печать списка файлов в текущей директории
+        for name in names:
+            # Формирование полного имени с путем
+            item = path + '\\' + name
+            # Проверка, что полное имя является файлом
+            if os.path.isfile(item):
+                # Получение размера файла в байтах
+                size = str(os.path.getsize(item))
+                # Получение даты и времени изменения файла
+                when = time.ctime(os.path.getmtime(item))
+                # Перевод имени файла в нижний регистр
+                name = name.lower()
+                # Разбиение имени на пару (имя - расширение)
+                pair = os.path.splitext(name)
+                # Печать информации о файле
+                print(pair[0].ljust(40), pair[1][1:].center(7), when, size.rjust(12), checkAccess(item))
+
+        # Печать общей информации о директории
+        print('Всего имен: ', len(names), '\n')
+
+        # Полагаем, что результат не корректен, пока имя не введено
+        ok = False
+        # Цикл ввода имени директории
+        while not ok:
+            path = input('Введите имя директории [Пусто-Отмена]:>').strip()
+            # Если введена пустая строка, то отмена обработки и возврат
+            if path == '':
+                print('Завершение просмотра директори')
+                break
+
+            # Проверка корректности имени директории
+            if not checkFilename(path):
+                print('Ошибка: имя директории не корректное')
+                continue
+
+            # Проверка существования директории
+            if not os.path.isdir(path):
+                print('Ошибка: такой директории не существует')
+                continue
+
+            # Имя директории корректное и она существует
+            ok = True
+
+    print(chr(13))
+
+
+# Функция проверки имени файла на корректность
+# (True - имя корректно или False - имя ошибочное)
+def checkFilename(name):
+    # Проверить, что имя содержит букву диска
+    idx = name.find(':')
+    # Если имя содержит диск
+    if idx != -1:
+        # Проверить, что двоеточие является вторым символом
+        # и первым символом является латинская буква
+        if idx != 1 or name[0].upper() not in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            return False
+    # Если буква диска с двоеточием находятся в начале имени
+    # или имя не содержит буквы диска, то проверить на слеши
+    idx = name.count('\\\\')
+    # Если имя содержит двойные слеши
+    if idx > 0:
+        return False
+    # Проверить, что имя не заканчивается на слеш
+    if name.endswith('\\'):
+        return False
+    # Проверить, что имя не содержит запрещенных символов
+    for idx in name:
+        if idx in '\"<*?|>':
+            return False
+    return True
+
+
+# Функция для форматирования строк результата
+def Format(name, value):
+    print(name.ljust(42, '.') + str(value).ljust(16, '#'))
+
+
+# Функция обработки текста из файла
+def main():
+    print('Лаба: Строки и текстовые файлы')
+    Ok = ''
+    while Ok == '':
+        name = '*'
+        # Цикл ввода имени файла или директории
+        while name == '*':
+            # Ввод имени файла с фрагментом текста
+            name = input('Введите имя файла [Пусто-Отмена]:>').strip()
+            # Если введена пустая строка, то отмена обработки и завершение
+            if name == '': return
+            # Если введена звёздочка, то вотображение содержания директории
+            if name == '*': Directories()
+
+            # Проверка корректности имени файла
+        if not checkFilename(name):
+            print('Ошибка: имя файла не корректное')
+            continue
+
+        # Проверка существования файла
+        if not os.path.exists(name):
+            print('Ошибка: файл с указанным именем не существует')
+            continue
+
+        # Открытие файла на чтение
+        try:
+            file = open(name, 'r')
+        except IOError:
+            print('Ошибка: невозможно открыть файл на чтение')
+            continue
+
+        # Чтение текста из файла
+        text = file.read()
+
+        # Закрытие файла
+        file.close()
+
+        # Определение общего количества символов в тексте
+        count = len(text)
+
+        # Инициализация счётчиков
+        count1 = count2 = count3 = count4 = 0
+
+        # Обработка текста по одному символу
+        for ch in text:
+            # Проверка условий по заданию
+            if ch in 'AEIOUY':
+                count1 += 1
+            elif ch in 'pbtdkgmn':
+                count2 += 1
+            elif ch in '!*“();:%@&=+$,/?#[]-_.~<>{}|''':
+                count3 += 1
+            else:
+                count4 += 1
+
+        # Вывод результатов обработки
+        print('Результаты обработки символов:')
+        Format('Английских прописных гласных букв', count1)
+        Format('Английских строчных смычных согласных букв', count2)
+        Format('Знаков, используемых для записи web-ссылок', count3)
+        Format('Прочих символов', count4)
+        Format('Всего символов в тексте', count)
+
+        # Объявление переменной для получения списка слов
+        mass = text.split()
+
+        # Определение количества слов
+        count = len(mass)
+
+        # Инициализация счётчиков
+        count1 = count2 = count3 = 0
+
+        # Обработка списка слов
+        for word in mass:
+            # Проверка условий по каждому слову по заданию
+            if word.find('arr') != (-1) or word.find('ch') != (-1):
+                count1 += 1
+                print('- ' + word + ' сч1=' + str(count1))
+            if word.startswith('sh') or word.startswith('qu'):
+                count2 += 1
+                print('- ' + word + ' сч2=' + str(count2))
+            if word.endswith('ion') or word.endswith('ess'):
+                count3 += 1
+                print('- ' + word + ' сч3=' + str(count3))
+
+        # Вывод результатов обработки слов
+        print('Результаты обработки слов:')
+        Format('Слов, содержащих \"arr\"/\"ch\"', count1)
+        Format('Слов, начинающихся с \"sh\"/\"qu\"', count2)
+        Format('Слов, заканчивающихся на \"ion\"/\"ess\"', count3)
+        Format('Всего слов в тексте', count)
+
+        # Подтверждение обработки ещё одного файла
+        Ok = input('\nОбработать ещё один файл? [enter]')
+
+    print('\nПрограмма завершена\n')
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
 
 # Задание лабы 5:
 
@@ -53,6 +481,179 @@ f3(x) = (coshx)3.2+|2x-√4x|-arcsin(x/3)
 
 При выводе – результаты округляются до 4-го знака, исходные данные – до 2-го знака. Производная не дана, а вычисляется по выбранной функций на основании её геометрического смысла.
 
+**Листинг Functions:**
+```python
+# Подключение математической библиотеки
+from math import *
+# Функция (обычная) для вычисления производной
+def Differential(x, y, f, r):
+    dx = 0.0001
+    if x == r:
+        d = (y-f(x-dx))/dx
+    else:
+        d = (f(x + dx)-y)/dx
+    return d
+# Yield-функция для генерации последовательности значений на интервале
+def Interval(start, end, increment):
+    x = start
+    # Начало при первом вызове
+    while x < end:
+        yield x
+        # Продолжение при следующем вызове
+        x = round(x + increment, 8)
+# Главная функция (обычная) для ввода данных, вычисления функции и вывода результатов
+def main():
+    print('Лаба: Интерполирование функции на интервале')
+
+    Yes = 'да'
+    while Yes == 'да':
+
+        # Выбор lambda-функции
+        num = input('Выберите функцию:\n1) log(x)**3.8 + cos(1.6*x)**1.2 + exp(x**0.25) - 1\n2) acos(x/9) - sinh(x/6)/3 +2*sin(1.2*x)\n3) cosh(x)**3.2 + abs(2*x-sqrt(4*x)) - asin(x/3)\nномер: > ')
+        if num == '1':
+            f = lambda x: (log(x))**3.8 + cos((1.6*x)**1.2) + exp(x**0.25) - 1.0
+        elif num == '2':
+            f = lambda x: acos(x/9) - sinh(x/6)/3 +2*sin(1.2*x)
+        elif num == '3':
+            f = lambda x: cosh(x)**3.2 + abs(2*x-sqrt(4*x)) - asin(x/3)
+        else:
+            print('Ошибка: неправильный номер функции')
+            continue
+
+        # Ввод левой границы интервала
+        value = input('Введите левую границу интервала:>').strip()
+        try:
+            left = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для левой границы')
+            continue
+        # Ввод правой границы интервала
+        value = input('Введите правую границу интервала:>').strip()
+        try:
+            right = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для правой границы')
+            continue
+        # Поменять границы местами, левая больше правой
+        if left > right:
+            left, right = right, left
+
+        if num == '1' and left < 1:
+            print('\nФункция лежит в интервале от 1 до +∞')
+            continue
+        elif num =='2' and (left<-9 or right>9):
+            print('\nФункция лежит в интервале от -9 до +9')
+            continue
+        elif num == '3' and (left < 0 or right > 3):
+            print('\nФункция лежит в интервале от 0 до 3')
+            continue
+        # Ввод шага вычисления
+        value = input('Введите шаг вычислений:>').strip()
+        try:
+            # Преобразование значения в вещественное число
+            step = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для шага')
+            continue
+
+            # Проверка шага на корректность
+        if step < 0.0001 or step > (right - left) / 2.0:
+            print('Ошибка: Недопустимое значение шага')
+            continue
+
+        # Инициализация определения наибольшего и наименьшего значения функции и производной
+        x_less = x_most = right
+        y_less = y_most = f(right)
+        diff_min = diff_max = Differential(right,  f(right), f,right)
+        # Инициализация вычисления площади под графиком функции
+        square = 0.0
+        # Инициализация суммы отрезков, значений функции производных, счётчика
+        total_otr = total_y = total_diff = c = 0
+
+        # Цикл расчёта значений функции на интервале
+        for x in Interval(left, right, step):
+            y = f(x)
+            diff = Differential(x,y,f,right)
+            c+=1
+            total_y += y
+            total_diff += diff
+            # Определение наименьшего значения
+            if y < y_less:
+                y_less = y
+                x_less = x
+            # Определение наибольшего значения
+            if y > y_most:
+                y_most = y
+                x_most = x
+            # Определение наименьшего значения производной
+            if diff < diff_min:
+                diff_min = diff
+            # Определение наибольшего значения производной
+            if diff > diff_max:
+                diff_max = diff
+            # Вычисление площади трапеции
+            s = 0.5 * abs(y + f(x+step)) * step
+            #Вычисление линейного отрезка
+            otr = sqrt((step)**2 + (f(x+step)-y)**2)
+            total_otr += otr
+            # Печать очередной точки и значений в ней
+            print(f'Точка ({round(x, 2)} ; {round(y, 4)}):\nЗначение: {round(y, 4)} \nПроизводная: {round(diff, 4)} 'f' \nПлощадь: {round(s, 4)} \nОтрезок: {round(otr, 4)}\n---------------------')
+            # Вычисление общей площади под графиком
+            square += s
+            x_old = x
+            y_old = y
+        # Печать последней точки и корректировка последней трапеции
+        try:
+            s = 0.5 * abs(y + f(x + step - right)) * (x + step - right)
+            otr = sqrt((right-x_old) ** 2 + ((y-y_old) ** 2))
+        except ValueError:
+            s = 0.0
+            otr = 0.0
+        finally:
+            print(f'Точка ({round(right, 2)} ; {round(f(right), 4)}):\nЗначение: {round(f(right), 4)} \nПроизводная: {round(Differential(right, f(right), f, right), 4)} \nПлощадь: {round(-s, 4)} \nОтрезок: {round(otr, 4)} \n---------------------')
+        if f(right) < y_less:
+            y_less = f(right)
+            x_less = right
+        # Определение наибольшего значения
+        if f(right) > y_most:
+            y_most = f(right)
+            x_most = right
+        # Наименьшее значения производной
+        if Differential(right, f(right), f, right) < diff_min:
+            diff_min = Differential(right, f(right), f, right)
+        # Наибольшее значения производной
+        if Differential(right, f(right), f, right) > diff_max:
+            diff_max = Differential(right, f(right), f, right)
+        square -= s
+        total_otr -= otr
+
+        # Печать наименьшего и наибольшего значения функции и площади под графиком
+        print('Наименьшее: F(', round(x_less, 2), ') = ', round(y_less, 4))
+        print('Наибольшее: F(', round(x_most, 2), ') = ', round(y_most, 4))
+        print(f'Среднее арифметическое = {round(total_y/c,4)}')
+        print(f'Разность = {round(y_most-y_less, 4)}')
+        print('--------------------------------------')
+        print(f'Наименьшая производная = {round(diff_min, 4)}')
+        print(f'Наибольшая производная = {round(diff_max, 4)}')
+        print(f'Среднее арифметическое = {round(total_diff/c , 4)}')
+        print('--------------------------------------')
+        print(f'Площадь = {round(square, 4)}')
+        print(f'Длина графика = {round(total_otr, 4)}')
+        print('--------------------------------------')
+        # Подтверждение нового расчёта
+        Yes = input('Повторить расчёт [да]:>').strip().lower()
+        print()
+    print('Завершение вычислений')
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
+
 # Задание лабы 6:
 
 Необходимо разработать программу, которая в массиве целых чисел переставляет соседние элементы местами, если их произведение делится на их сумму без остатка, и они имеют разные знаки. Вычисляет разность по модулю между суммой элементов с чётными индексами и суммой элементов с нечётными индексами. Например,  
@@ -60,6 +661,179 @@ f3(x) = (coshx)3.2+|2x-√4x|-arcsin(x/3)
 3, -2, 6, -5, 9, 0, 8, 1, -4  
 – результирующий массив:  
 -2, 3, -5, 6, 9, 0, 8, 1, -4  
+
+**Листинг Array:**
+```python
+# Подключение математической библиотеки
+from math import *
+# Функция (обычная) для вычисления производной
+def Differential(x, y, f, r):
+    dx = 0.0001
+    if x == r:
+        d = (y-f(x-dx))/dx
+    else:
+        d = (f(x + dx)-y)/dx
+    return d
+# Yield-функция для генерации последовательности значений на интервале
+def Interval(start, end, increment):
+    x = start
+    # Начало при первом вызове
+    while x < end:
+        yield x
+        # Продолжение при следующем вызове
+        x = round(x + increment, 8)
+# Главная функция (обычная) для ввода данных, вычисления функции и вывода результатов
+def main():
+    print('Лаба: Интерполирование функции на интервале')
+
+    Yes = 'да'
+    while Yes == 'да':
+
+        # Выбор lambda-функции
+        num = input('Выберите функцию:\n1) log(x)**3.8 + cos(1.6*x)**1.2 + exp(x**0.25) - 1\n2) acos(x/9) - sinh(x/6)/3 +2*sin(1.2*x)\n3) cosh(x)**3.2 + abs(2*x-sqrt(4*x)) - asin(x/3)\nномер: > ')
+        if num == '1':
+            f = lambda x: (log(x))**3.8 + cos((1.6*x)**1.2) + exp(x**0.25) - 1.0
+        elif num == '2':
+            f = lambda x: acos(x/9) - sinh(x/6)/3 +2*sin(1.2*x)
+        elif num == '3':
+            f = lambda x: cosh(x)**3.2 + abs(2*x-sqrt(4*x)) - asin(x/3)
+        else:
+            print('Ошибка: неправильный номер функции')
+            continue
+
+        # Ввод левой границы интервала
+        value = input('Введите левую границу интервала:>').strip()
+        try:
+            left = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для левой границы')
+            continue
+        # Ввод правой границы интервала
+        value = input('Введите правую границу интервала:>').strip()
+        try:
+            right = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для правой границы')
+            continue
+        # Поменять границы местами, левая больше правой
+        if left > right:
+            left, right = right, left
+
+        if num == '1' and left < 1:
+            print('\nФункция лежит в интервале от 1 до +∞')
+            continue
+        elif num =='2' and (left<-9 or right>9):
+            print('\nФункция лежит в интервале от -9 до +9')
+            continue
+        elif num == '3' and (left < 0 or right > 3):
+            print('\nФункция лежит в интервале от 0 до 3')
+            continue
+        # Ввод шага вычисления
+        value = input('Введите шаг вычислений:>').strip()
+        try:
+            # Преобразование значения в вещественное число
+            step = float(value)
+        # Обработка ошибок преобразования
+        except ValueError:
+            print('Ошибка: требуется число для шага')
+            continue
+
+            # Проверка шага на корректность
+        if step < 0.0001 or step > (right - left) / 2.0:
+            print('Ошибка: Недопустимое значение шага')
+            continue
+
+        # Инициализация определения наибольшего и наименьшего значения функции и производной
+        x_less = x_most = right
+        y_less = y_most = f(right)
+        diff_min = diff_max = Differential(right,  f(right), f,right)
+        # Инициализация вычисления площади под графиком функции
+        square = 0.0
+        # Инициализация суммы отрезков, значений функции производных, счётчика
+        total_otr = total_y = total_diff = c = 0
+
+        # Цикл расчёта значений функции на интервале
+        for x in Interval(left, right, step):
+            y = f(x)
+            diff = Differential(x,y,f,right)
+            c+=1
+            total_y += y
+            total_diff += diff
+            # Определение наименьшего значения
+            if y < y_less:
+                y_less = y
+                x_less = x
+            # Определение наибольшего значения
+            if y > y_most:
+                y_most = y
+                x_most = x
+            # Определение наименьшего значения производной
+            if diff < diff_min:
+                diff_min = diff
+            # Определение наибольшего значения производной
+            if diff > diff_max:
+                diff_max = diff
+            # Вычисление площади трапеции
+            s = 0.5 * abs(y + f(x+step)) * step
+            #Вычисление линейного отрезка
+            otr = sqrt((step)**2 + (f(x+step)-y)**2)
+            total_otr += otr
+            # Печать очередной точки и значений в ней
+            print(f'Точка ({round(x, 2)} ; {round(y, 4)}):\nЗначение: {round(y, 4)} \nПроизводная: {round(diff, 4)} 'f' \nПлощадь: {round(s, 4)} \nОтрезок: {round(otr, 4)}\n---------------------')
+            # Вычисление общей площади под графиком
+            square += s
+            x_old = x
+            y_old = y
+        # Печать последней точки и корректировка последней трапеции
+        try:
+            s = 0.5 * abs(y + f(x + step - right)) * (x + step - right)
+            otr = sqrt((right-x_old) ** 2 + ((y-y_old) ** 2))
+        except ValueError:
+            s = 0.0
+            otr = 0.0
+        finally:
+            print(f'Точка ({round(right, 2)} ; {round(f(right), 4)}):\nЗначение: {round(f(right), 4)} \nПроизводная: {round(Differential(right, f(right), f, right), 4)} \nПлощадь: {round(-s, 4)} \nОтрезок: {round(otr, 4)} \n---------------------')
+        if f(right) < y_less:
+            y_less = f(right)
+            x_less = right
+        # Определение наибольшего значения
+        if f(right) > y_most:
+            y_most = f(right)
+            x_most = right
+        # Наименьшее значения производной
+        if Differential(right, f(right), f, right) < diff_min:
+            diff_min = Differential(right, f(right), f, right)
+        # Наибольшее значения производной
+        if Differential(right, f(right), f, right) > diff_max:
+            diff_max = Differential(right, f(right), f, right)
+        square -= s
+        total_otr -= otr
+
+        # Печать наименьшего и наибольшего значения функции и площади под графиком
+        print('Наименьшее: F(', round(x_less, 2), ') = ', round(y_less, 4))
+        print('Наибольшее: F(', round(x_most, 2), ') = ', round(y_most, 4))
+        print(f'Среднее арифметическое = {round(total_y/c,4)}')
+        print(f'Разность = {round(y_most-y_less, 4)}')
+        print('--------------------------------------')
+        print(f'Наименьшая производная = {round(diff_min, 4)}')
+        print(f'Наибольшая производная = {round(diff_max, 4)}')
+        print(f'Среднее арифметическое = {round(total_diff/c , 4)}')
+        print('--------------------------------------')
+        print(f'Площадь = {round(square, 4)}')
+        print(f'Длина графика = {round(total_otr, 4)}')
+        print('--------------------------------------')
+        # Подтверждение нового расчёта
+        Yes = input('Повторить расчёт [да]:>').strip().lower()
+        print()
+    print('Завершение вычислений')
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
 
 # Задание лабы 7:
 
@@ -79,3 +853,111 @@ h = E / (g * m)
 | 3 | 8829.0                        | 30.0         | 30.0         |
 | 4 | 1765.8                        | 6            | 30           |
 
+**Листинг Law:**
+```python
+# Декларация класса для потенциальной энергии
+class PotentialEnergy:
+    def __init__(self, m=1, E=9.81, g=9.81, h = 1):
+        self.__energy = E  # Потенциальная энергия (Джоули)
+        self.__weight = m # Масса (кг)
+        self.__height = h  # Высота (метры)
+        self.__acceleration = g  # Ускорение свободного падения (м/c^2)
+
+    def getEnergy(self):  # Получение значения потенциальной энергии
+        return self.__energy
+
+    def getWeight(self):  # Получение значения массы
+        return self.__weight
+
+    def getHeight(self):  # Получение значения высоты
+        return self.__height
+
+    def getAcceleration(self):# Получение значения ускорения
+        return self.__acceleration
+
+    def setEnergy(self, E):  # Изменение значения потенциальной энергии
+        assert (E >= 0)
+        self.__energy = E
+        self.__height = self.__energy / (self.__acceleration * self.__height)
+
+    def setHeight(self, h):  # Изменение значения высоты
+        assert (h > 0)
+        self.__height = h
+        self.__energy = self.__weight * self.__acceleration * self.__height
+
+    def setWeight(self, m):  # Изменение значения массы
+        assert (m >= 0)
+        self.__weight = m
+        self.__energy = self.__weight * self.__acceleration * self.__height
+
+# Главная функция реализует интерфейс с пользователем
+def main():
+    PE = PotentialEnergy()
+    punkt = '?'
+
+    print('Лаба: Физический закон')
+    while (punkt != 'Q' and punkt != 'q'):
+
+        # Печать пунктов консольного меню
+        if punkt == '?':
+            print('Главное меню:')
+            print('E. Значение потенциальной энергии')
+            print('M. Значение массы')
+            print('H. Значение высоты')
+            print('P. Печать всех значений закона')
+            print('Q. Завершение работы с программой')
+
+        # Печать всех значений закона
+        elif punkt == 'P':
+            print('Потенциальная энергия = ', round(PE.getEnergy(), 2))
+            print('Масса = ', round(PE.getWeight(), 2))
+            print('Высота = ', round(PE.getHeight(), 2))
+            print('Ускорение свободного падения = ', round(PE.getAcceleration(), 2))
+
+        # Ввод и изменение значения потенциальной энергии
+        elif punkt == 'E':
+            s = input('Введите значение потенциальной энергии [Дж]:>').strip()
+            try:
+                value = float(s)
+                PE.setEnergy(value)
+                punkt = 'P'
+                continue
+            except (ValueError, AssertionError):
+                print('Ошибка: некорректное значение потенциальной энергии')
+
+        # Ввод и изменение значения массы
+        elif punkt == 'M':
+            s = input('Введите значение массы [кг]:>').strip()
+            try:
+                value = float(s)
+                PE.setWeight(value)
+                punkt = 'P'
+                continue
+            except (ValueError, AssertionError):
+                print('Ошибка: некорректное значение массы')
+
+        # Ввод и изменение значения высоты
+        elif punkt == 'H':
+            s = input('Введите значение высоты [м]:>').strip()
+            try:
+                value = float(s)
+                PE.setHeight(value)
+                punkt = 'P'
+                continue
+            except (ValueError, AssertionError):
+                print('Ошибка: некорректное значение высоты')
+
+        else:
+            print('Ошибка: некорректная команда')
+
+        # Ввод команд меню
+        punkt = input('Выберите команду [?-меню]:>').strip().upper()
+
+    # Выход из меню
+    print('Программа завершена')
+
+
+# Запуск главной функции
+if __name__ == '__main__':
+    main()
+```
